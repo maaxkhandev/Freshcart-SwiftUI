@@ -11,7 +11,11 @@ import SwiftUI
 struct FreshCartApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack{
+                OnboardingView()
+            }
+            
+           
         }
     }
 }
