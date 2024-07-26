@@ -20,7 +20,13 @@ struct ShopView: View {
                     }
                 }
             }
-            .navigationBarItems(trailing: Image(systemName: "plus.app.fill").font(.title2))
+            .navigationBarItems(trailing:
+                                    NavigationLink(destination: {
+                AddProductView()
+            }, label: {
+                Image(systemName: "plus.app.fill").font(.title2)
+            })
+            )
             
         }
     }
