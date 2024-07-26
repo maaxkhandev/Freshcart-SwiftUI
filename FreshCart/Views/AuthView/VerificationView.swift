@@ -17,13 +17,18 @@ struct VerificationView: View {
             CustomTitle(title: "Enter your 4-digit code")
                 .padding(.bottom, 30)
             
-            LabeledTextField( inputString: $phoneNumber, focusedField: _focusedField, hint: "- - - -", title: "Code")
+            LabeledTextField( inputString: $phoneNumber, hint: "- - - -", title: "Code")
                 .onReceive(phoneNumber.publisher.last()) { output in
                     if self.phoneNumber.count > 4 {
                         self.phoneNumber = String(self.phoneNumber.dropLast())
                     }
                 }
                 .keyboardType(.numberPad)
+            
+            .padding(.vertical, 6)
+            .background(Divider(), alignment: .bottom)
+            .padding(.bottom, 8)
+
             
             Spacer()
             

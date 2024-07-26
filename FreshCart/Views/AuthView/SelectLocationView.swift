@@ -4,7 +4,6 @@
 //
 //  Created by Maaz Khan on 10/07/2024.
 //
-
 import SwiftUI
 
 struct SelectLocationView: View {
@@ -12,25 +11,25 @@ struct SelectLocationView: View {
     let areas = ["shawar", "matta", "beha", "baidara"]
     @State private var selectedZone: String = "Swat"
     @State private var selectedArea: String = "Matta"
+    
     var body: some View {
-        VStack{
+        VStack {
             Spacer()
             Image("location")
             
             CustomTitle(title: "Select Your Location")
             
             CustomSubtitle(title: "Switch on your location to stay in tune with what's happening in your area", alignment: .center)
-                Spacer()
+            Spacer()
             
             CustomDropDown(title: "Your Zone", selectedValue: $selectedZone, values: zones)
                 .padding(.bottom, 20)
             CustomDropDown(title: "Your Area", selectedValue: $selectedArea, values: areas)
                 .padding(.bottom, 30)
             
-            NavigationLink(destination: SigninView()) {
-                CustomButton(title: "Submit"){
-                    
-                }.allowsHitTesting(false)
+            NavigationLink(destination: AuthenticationView().environmentObject(AuthenticationViewModel())) {
+                CustomButton(title: "Submit") {}
+                    .allowsHitTesting(false)
             }
             Spacer()
         }
@@ -40,4 +39,5 @@ struct SelectLocationView: View {
 
 #Preview {
     SelectLocationView()
+        .environmentObject(AuthenticationViewModel())
 }

@@ -7,78 +7,114 @@
 
 import SwiftUI
 
+private enum FocusableField: Hashable {
+    case userName
+    case email
+    case password
+}
+
 struct SignUpView: View {
-    @State private var username: String = ""
-    @State private var email: String = ""
-    @State private var password: String = ""
-//    @FocusState private var focusedField: Field?
+   
+    @FocusState private var focus: FocusableField?
+    
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @Environment(\.dismiss) var dismiss
+    
+   
+    private func signUpWithEmailPassword() {
+      Task {
+        if await authViewModel.signUpWithEmailPassword() == true {
+          dismiss()
+        }
+      }
+    }
     
     var body: some View {
-        VStack(alignment: .leading) {
-            
-            Image("carrot1")
-                .padding(.top, 20)
-                .frame(maxWidth: .infinity, alignment: .center)
-            
-            
-            CustomTitle(title: "Sign Up")
-                .padding(.bottom, 6)
-            
-            CustomSubtitle(title: "Enter your Credentials to continue")
-                .padding(.bottom, 50)
-            
-            
-            LabeledTextField(
-                inputString: $username,
-//                focusedField: _focusedField,
-                hint: "Enter your username",
-                title: "Username",
-                validation: ValidationHelper.isValidUsername,
-                errorMessage: "Username must be at least 4 characters"
-            )
-            LabeledTextField(
-                inputString: $email,
-//                focusedField: _focusedField,
-                hint: "Enter your email",
-                title: "Email",
-                validation: ValidationHelper.isValidEmail,
-                errorMessage: "Invalid email format"
-            )
-            
-            LabeledTextField(
-                inputString: $password,
-//                focusedField: _focusedField,
-                hint: "Enter your password",
-                title: "Password",
-                isPassword: true,
-                validation: ValidationHelper.isValidPassword,
-                errorMessage: "Password must be at least 8 characters long, contain at least one number, and include at least one capital letter."
-            )
-            .padding(.bottom, 10)
-            
-            terms
-            
-            NavigationLink(destination: MainView()) {
-                CustomButton(title: "Sign Up") {
+        ScrollView {
+            VStack(alignment: .leading) {
+                
+                Image("carrot1")
+                    .padding(.top, 20)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                
+                
+                CustomTitle(title: "Sign Up")
+                    .padding(.bottom, 6)
+                
+                CustomSubtitle(title: "Enter your Credentials to continue")
+                    .padding(.bottom, 50)
+                
+                
+                LabeledTextField(
+                    inputString: $authViewModel.userName,
                     
+                    hint: "Enter your username",
+                    title: "Username",
+                    validation: ValidationHelper.isValidUsername,
+                    errorMessage: "Username must be at least 4 characters"
+                )
+                .focused($focus, equals: .userName)
+                .submitLabel(.next)
+                .onSubmit {
+                  self.focus = .email
+                }
+                LabeledTextField(
+                    inputString: $authViewModel.email,
+                    
+                    hint: "Enter your email",
+                    title: "Email",
+                    validation: ValidationHelper.isValidEmail,
+                    errorMessage: "Invalid email format"
+                )
+                .focused($focus, equals: .email)
+                .submitLabel(.next)
+                .onSubmit {
+                  self.focus = .password
+                }
+                
+                LabeledTextField(
+                    inputString: $authViewModel.password,
+                    
+                    hint: "Enter your password",
+                    title: "Password",
+                    isPassword: true,
+                    validation: ValidationHelper.isValidPassword,
+                    errorMessage: "Password must be at least 8 characters long, contain at least one number, and include at least one capital letter."
+                )
+                .focused($focus, equals: .password)
+                .submitLabel(.go)
+                .onSubmit {
+                 signUpWithEmailPassword()
                 }
                 .padding(.bottom, 10)
-                    .allowsHitTesting(false)
+                
+                terms
+                
+                if !authViewModel.errorMessage.isEmpty {
+                  VStack {
+                    Text(authViewModel.errorMessage)
+                      .foregroundColor(Color(UIColor.systemRed))
+                  }
+                  .padding(.vertical, 10)
+                }
+                    CustomButton(title: "Sign Up", isLoading: authViewModel.authenticationState == .authenticating) {
+                        signUpWithEmailPassword()
+                    }
+                    .padding(.bottom, 10)
+
+                
+                
+                alreadyHaveAccount
+                
+                Spacer()
+                
+                
+                
+                
             }
-           
-           
-           
-            
-            alreadyHaveAccount
-            
-            Spacer()
-            
-            
-            
-            
-        }
-        .navigationBarHidden(true)
+            .navigationBarHidden(true)
         .padding(.horizontal, 20)
+        }
     }
     
     var terms: some View{
@@ -111,13 +147,13 @@ struct SignUpView: View {
                 .font(.subheadline)
                 .fontWeight(.medium)
             
-            NavigationLink(destination: SigninView()) {
+//            NavigationLink(destination: SigninView()) {
                 Button("Sign In") {
-                    
+                    authViewModel.switchFlow()
                 }
                 .font(.subheadline)
-                .allowsHitTesting(false)
-            }
+               
+//            }
         }
         .frame(maxWidth: .infinity, alignment: .center)
     }
@@ -125,4 +161,5 @@ struct SignUpView: View {
 
 #Preview {
     SignUpView()
+        .environmentObject(AuthenticationViewModel())
 }

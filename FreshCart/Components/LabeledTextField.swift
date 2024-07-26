@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LabeledTextField: View {
     @Binding var inputString: String
-    @FocusState var focusedField: Field?
+  
     let hint: String
     let title: String
     var isPassword: Bool = false
@@ -24,8 +24,10 @@ struct LabeledTextField: View {
             ZStack (alignment: .trailing) {
                 if isPassword {
                     secureField
+                        .textInputAutocapitalization(TextInputAutocapitalization.never)
                 } else {
                     regularTextField
+                        .textInputAutocapitalization(TextInputAutocapitalization.never)
                 }
                 
                 validationIcon
@@ -57,7 +59,7 @@ struct LabeledTextField: View {
                     .stroke(Color(.systemGray4), lineWidth: 1)
             )
             .frame(height: 40)
-            .focused($focusedField, equals: .inputString)
+           
             
             Button(action: {
                 isSecured.toggle()
@@ -79,7 +81,7 @@ struct LabeledTextField: View {
                     .stroke(Color(.systemGray4), lineWidth: 1)
             )
             .frame(height: 40)
-            .focused($focusedField, equals: .inputString)
+         
     }
     
     private var validationIcon: some View {

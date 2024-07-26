@@ -6,20 +6,48 @@
 //
 
 import Foundation
-
-enum ProductType {
+enum ProductType: CaseIterable, Identifiable {
     case fruitsAndVegetables
     case cookingOilAndGhee
     case meatAndFish
     case bakeryAndSnacks
     case dairyAndEggs
     case beverages
+    
+    var id: Self { self }
+    
+    var displayName: String {
+        switch self {
+        case .fruitsAndVegetables:
+            return "Fruits and Vegetables"
+        case .cookingOilAndGhee:
+            return "Cooking Oil and Ghee"
+        case .meatAndFish:
+            return "Meat and Fish"
+        case .bakeryAndSnacks:
+            return "Bakery and Snacks"
+        case .dairyAndEggs:
+            return "Dairy and Eggs"
+        case .beverages:
+            return "Beverages"
+        }
+    }
+}
+
+enum QuantityUnit: String, CaseIterable, Identifiable {
+    case kilogram = "kg"
+    case gram = "g"
+    case liter = "liter"
+    case milliliter = "ml"
+    case piece = "piece"
+    
+    var id: String { self.rawValue }
 }
 
 struct Nutrition: Identifiable {
     let id = UUID()
-    let name: String
-    let amount: String
+    var name: String
+    var amount: String
 }
 
 struct Product: Identifiable {

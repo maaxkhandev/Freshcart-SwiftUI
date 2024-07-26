@@ -5,9 +5,6 @@ struct InputNumberView: View {
         case phoneNumber
     }
     
-//    @State private var isNextEnabled = false
-//    private var bannerData = BannerData(title: "Info", detail: "This is an informational banner.", type: .info)
-//        @State private var showBanner = false
     @State private var phoneNumber: String = ""
     @FocusState private var focusedField: Field?
     @State private var isCountryPickerPresented = false
@@ -16,7 +13,6 @@ struct InputNumberView: View {
 
     init() {
         _countries = State(initialValue: loadJson("CountriesInfo"))
-        print("Countries in init: \(_countries.wrappedValue)")
     }
     
     var body: some View {
